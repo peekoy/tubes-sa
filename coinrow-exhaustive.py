@@ -1,51 +1,71 @@
 import tkinter as tk
+from tkinter import messagebox
+import time
+from itertools import combinations
 
-def coin_row_problem(coins):
+def is_valid_combination(comb):
+    # Check if any two coins in the combination are adjacent
+    for i in range(len(comb) - 1):
+        if comb[i] + 1 == comb[i + 1]:
+            return False
+    return True
+
+def coin_row_exhaustive_search(coins):
     n = len(coins)
-    max_value = 0
-    max_combination = []
+    max_sum = 0
+    best_combination = []
+    all_combinations = []
 
-    def exhaustive_search(i, current_value, current_combination):
-        nonlocal max_value, max_combination
-        if i >= n:
-            if current_value > max_value:
-                max_value = current_value
-                max_combination = current_combination[:]
-            return
-        exhaustive_search(i + 2, current_value + coins[i], current_combination + [coins[i]])
-        exhaustive_search(i + 1, current_value, current_combination)
+    for r in range(n + 1):
+        for comb in combinations(range(n), r):
+            if is_valid_combination(comb):
+                current_sum = sum(coins[i] for i in comb)
+                all_combinations.append([coins[i] for i in comb])
+                if current_sum > max_sum:
+                    max_sum = current_sum
+                    best_combination = comb
 
-    exhaustive_search(0, 0, [])
-    return max_value, max_combination
+    taken_coins = [coins[i] for i in best_combination]
+    return max_sum, taken_coins, all_combinations
 
 def solve():
-    num_coins = int(num_coins_entry.get())
-    coins = [int(x) for x in coin_entries.get().split()]
-    if len(coins)!= num_coins:
-        result_label.config(text="Error: Invalid input")
+    try:
+        coin_values = list(map(int, entry.get().split()))
+        if not coin_values:
+            raise ValueError("Empty input")
+    except ValueError:
+        messagebox.showerror("Error", "Silakan masukkan nilai koin yang valid (pisahkan dengan spasi).")
         return
-    max_value, max_combination = coin_row_problem(coins)
-    result_label.config(text=f"Maximum value: {max_value}\nCombination: {max_combination}")
 
+    start_time = time.time()
+    max_sum, taken_coins, all_combinations = coin_row_exhaustive_search(coin_values)
+    end_time = time.time()
+
+    elapsed_time = end_time - start_time
+
+    result_text = f"Total maksimal yang bisa diambil: {max_sum}\n"
+    result_text += f"Koin yang diambil: {taken_coins}\n"
+    result_text += f"Waktu eksekusi: {elapsed_time:.6f} detik\n"
+    result_text += "Semua kombinasi koin yang mungkin diambil:\n"
+    for comb in all_combinations:
+        result_text += f"{comb}\n"
+
+    result_label.config(text=result_text)
+
+# Setup GUI
 root = tk.Tk()
 root.title("Coin Row Problem")
 
-num_coins_label = tk.Label(root, text="Enter number of coins:")
-num_coins_label.pack()
+label = tk.Label(root, text="Masukkan nilai koin (pisahkan dengan spasi):")
+label.pack()
 
-num_coins_entry = tk.Entry(root, width=10)
-num_coins_entry.pack()
-
-coin_label = tk.Label(root, text="Enter coin values (separated by spaces):")
-coin_label.pack()
-
-coin_entries = tk.Entry(root, width=50)
-coin_entries.pack()
+entry = tk.Entry(root, width=50)
+entry.pack()
 
 solve_button = tk.Button(root, text="Solve", command=solve)
 solve_button.pack()
 
-result_label = tk.Label(root, text="")
+result_label = tk.Label(root, text="", justify=tk.LEFT)
 result_label.pack()
 
 root.mainloop()
