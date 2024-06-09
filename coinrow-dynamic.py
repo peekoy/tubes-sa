@@ -73,7 +73,6 @@ def solve():
 
     result_label.config(text=result_text)
 
-# Setup GUI
 root = tk.Tk()
 root.title("Coin Row Problem")
 

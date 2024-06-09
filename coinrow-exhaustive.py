@@ -4,7 +4,6 @@ import time
 from itertools import combinations
 
 def is_valid_combination(comb):
-    # Check if any two coins in the combination are adjacent
     for i in range(len(comb) - 1):
         if comb[i] + 1 == comb[i + 1]:
             return False
@@ -52,7 +51,6 @@ def solve():
 
     result_label.config(text=result_text)
 
-# Setup GUI
 root = tk.Tk()
 root.title("Coin Row Problem")
 
