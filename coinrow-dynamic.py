@@ -82,7 +82,7 @@ label.pack()
 entry = tk.Entry(root, width=50)
 entry.pack()
 
-solve_button = tk.Button(root, text="Solve", command=solve)
+solve_button = tk.Button(root, text="mulai (dynamic)", command=solve)
 solve_button.pack()
 
 result_label = tk.Label(root, text="", justify=tk.LEFT)
