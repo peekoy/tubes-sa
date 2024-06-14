@@ -70,7 +70,7 @@ def solve():
     result_text += "Semua kombinasi koin yang mungkin diambil:\n"
     for comb in combinations:
         result_text += f"{comb}\n"
-
+    print(f"{elapsed_time:.6f}")
     result_label.config(text=result_text)
 
 root = tk.Tk()
